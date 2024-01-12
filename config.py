@@ -1,4 +1,2 @@
-#import os
-#TOKEN = os.getenv('TOKEN')
-
-TOKEN="6979865562:AAF-w9aXHCtQKX_DGJzYCJDjuRrOKgDt2sY"
+import os
+token_tg = os.getenv('token_tg', 'Ключа нет')
