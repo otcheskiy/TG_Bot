@@ -1,40 +1,36 @@
+#стандартные модули питона
 import asyncio
+import os
+
+# модули aiogram 
 from aiogram import Bot, Dispatcher, types
-from config import token_tg
 from aiogram.filters import CommandStart, Command
+#from config import token_tg
+
 import logging
-print( 'token_tg: ', token_tg)
-bot = Bot(token_tg)
+from dotenv import find_dotenv, load_dotenv
+load_dotenv(find_dotenv())
+
+#пользовательские модули
+from handlers.user_private import user_private_router
+from common.bot_cmds_list import private
+
+#print( 'token_tg: ', token_tg)
+
+ALLOWED_UPDATE = ['message, edited_message']
+
+#bot = Bot(token_tg)
+bot = Bot(token = os.getenv('TOKEN'))
 dp = Dispatcher()
 
-@dp.message(CommandStart())
-async def start_cmd(message: types.Message):
-    #print(CommandStart.commands)
-    await message.answer( text = f"Привет, {message.from_user.full_name}" )
-
-@dp.message(Command('help'))
-async def handle_help(message: types.Message):
-    text = 'Я эхо бот.\nОтправь мне сообщение!'
-    await message.answer(text = text)
-
-@dp.message()
-async def echo(message: types.Message):
-    text = message.text
-    print(text)
-    #text = f"Привет, {message.from_user.full_name}"
-    if text in [ 'Привет', 'привет', 'hi', 'hello', 'Hello']:
-        await message.answer( text = f"И тебе привет!, {message.from_user.full_name}" )
-    elif text in ['Пока', 'пока', 'До свидания']:
-        await message.answer( text = f"До новых встреч, {message.from_user.last_name}")
-    else:
-        await message.answer(text)
-
-
-
+dp.include_router(user_private_router)
 
 
 async def main():
     logging.basicConfig(level=logging.INFO)
-    await dp.start_polling(bot)
+    await bot.delete_webhook(drop_pending_updates=True)
+    #await bot.delete_my_commands(scope=types.BotCommandScopeAllPrivateChats())
+    await bot.set_my_commands(commands=private, scope=types.BotCommandScopeAllPrivateChats())
+    await dp.start_polling(bot, allowed_updates=ALLOWED_UPDATE)
 
 asyncio.run(main())
