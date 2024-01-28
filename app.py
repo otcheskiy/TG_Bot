@@ -1,4 +1,5 @@
 #стандартные модули питона !!! -- &&
+"""test add text"""
 import asyncio
 import os
 
