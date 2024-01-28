@@ -1,5 +1,7 @@
 from aiogram import F, types, Router
 from aiogram.filters import CommandStart, Command, or_f
+from aiogram.utils.formatting import as_list, as_marked_section, Bold
+
 from filters.chat_types import ChatTypeFilter
 
 from kbds import reply
@@ -33,26 +35,47 @@ async def handle_menu(message: types.Message):
 @user_private_router.message(Command('about'))
 async def handle_about(message: types.Message):
     text = 'О магазине:'
-    await message.answer(text = text)
+    await message.answer(text)
 
 @user_private_router.message(F.text.lower() == 'варианты оплаты')
 @user_private_router.message(Command('payments'))
 async def handle_payment(message: types.Message):
-    text = 'Варианты оплаты:'
-    await message.answer(text = text)
+    text = as_marked_section(
+            Bold('Варианты оплаты:'),
+            'Картой в боте',
+            'При получении',
+            'В заведении',
+            marker='✅ '
+                )
+    await message.answer(text.as_html())
 
 @user_private_router.message(
         (F.text.lower().contains('доставк')) | (F.text.lower() == 'варианты доставки')
 )
 @user_private_router.message(Command('shipping'))
-async def handle_payment(message: types.Message):
-    text = 'Варианты доставки:'
-    await message.answer(text = text)
+async def menu_cmd(message: types.Message):
+    text = as_list(
+        as_marked_section(
+            Bold("Варианты доставки/заказа:"),
+            "Курьер",
+            "Самовынос (сейчас прибегу заберу)",
+            "Покушаю у Вас (сейчас прибегу)",
+            marker='✅ '
+        ),
+        as_marked_section(
+            Bold("Нельзя:"),
+            "Почта",
+            "Голуби",
+            marker='❌ '
+        ),
+        sep='\n----------------------\n'
+    )
+    await message.answer(text.as_html())
 
 @user_private_router.message(F.contact)
 async def get_contact(message: types.Message):
     await message.answer(f"номер получен")
-    await message.answer(str(message.contact))
+    await message.answer(str(message.contact.phone_number))
 
 
 @user_private_router.message(F.location)
