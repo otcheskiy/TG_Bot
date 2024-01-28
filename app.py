@@ -1,5 +1,12 @@
 #стандартные модули питона !!! -- &&
-"""test add text"""
+# !!! ===
+"""
+git status
+git add .
+git commit -m ' descr...'
+git push - добавить на сервер
+git pull - обновить с сервера
+"""
 import asyncio
 import os
 
