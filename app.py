@@ -1,6 +1,7 @@
 #стандартные модули питона !!! -- &&
 # !!! ===
 """
+pip install -r requirements.txt 
 git status
 git add .
 git commit -m ' descr...'
