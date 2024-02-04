@@ -1,4 +1,5 @@
 from aiogram import F, types, Router
+#from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command, or_f
 from aiogram.utils.formatting import as_list, as_marked_section, Bold
 
@@ -11,12 +12,12 @@ user_private_router.message.filter(ChatTypeFilter(['private']))
 
 @user_private_router.message(CommandStart())
 async def start_cmd(message: types.Message):
-    await message.answer( text = f"Привет, {message.from_user.full_name}, я виртуальный помощник",
-                         reply_markup=reply.test_kb )
     """await message.answer( text = f"Привет, {message.from_user.full_name}, я виртуальный помощник",
+                         reply_markup=reply.test_kb )"""
+    await message.answer( text = f"Привет, {message.from_user.full_name}, я виртуальный помощник",
                          reply_markup=reply.start_kb3.as_markup(
                              resize_keyboard=True,
-                             input_field_placeholder='Что Вас интересует ?') )"""
+                             input_field_placeholder='Что Вас интересует ?') )
 
 @user_private_router.message(Command('help'))
 async def handle_help(message: types.Message):
@@ -34,7 +35,7 @@ async def handle_menu(message: types.Message):
 @user_private_router.message(F.text.lower() == 'о магазине')
 @user_private_router.message(Command('about'))
 async def handle_about(message: types.Message):
-    text = 'О магазине:'
+    text = '<b><i>О магазине: </i></b>'
     await message.answer(text)
 
 @user_private_router.message(F.text.lower() == 'варианты оплаты')
@@ -50,7 +51,7 @@ async def handle_payment(message: types.Message):
     await message.answer(text.as_html())
 
 @user_private_router.message(
-        (F.text.lower().contains('доставк')) | (F.text.lower() == 'варианты доставки')
+        (F.text.lower().contains('доставка')) | (F.text.lower() == 'варианты доставки')
 )
 @user_private_router.message(Command('shipping'))
 async def menu_cmd(message: types.Message):
